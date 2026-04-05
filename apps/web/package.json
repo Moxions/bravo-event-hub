@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "bravo-event",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,11 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "firebase": "^12.11.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-router-dom": "^7.13.2",
-    "react-toastify": "^11.0.5"
+    "@bravo-event/firebase": "workspace:*",
+    "@bravo-event/types": "workspace:*",
+    "@bravo-event/hooks": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

@@ -1,0 +1,9 @@
+{
+  "name": "@bravo-event/hooks",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  }
+}
