@@ -242,3 +242,4 @@ export const cancelRegistration = async (registrationId, eventId) => {
     throw error;
   }
 };
+
