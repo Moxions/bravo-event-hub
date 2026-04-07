@@ -1,0 +1,9 @@
+{
+  "name": "@bravo-event/firebase",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "firebase": "^10.0.0"
+  }
+}
