@@ -69,6 +69,14 @@ function Signin() {
             <button type="submit" disabled={loading} className="primary-btn">
               {loading ? 'Logging in...' : 'Login'}
             </button>
+            <button
+              type="button"
+              className="ghost-btn"
+              onClick={() => navigate('/dashboard')}
+              style={{ marginTop: 12 }}
+            >
+              Continue without logging in
+            </button>
           </form>
 
           <p className="muted-link">
