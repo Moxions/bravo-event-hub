@@ -1,6 +1,6 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Landing.css';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "./Landing.css";
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -21,20 +21,24 @@ export default function Landing() {
           <div className="role-card">
             <h3>Attendee</h3>
             <p className="card-desc">Browse and join events</p>
-            <button className="primary-btn" onClick={() => navigate('/signup')}>Continue</button>
+            <button
+              className="primary-btn"
+              onClick={() => navigate("/signin/attendee")}
+            >
+              Login
+            </button>
           </div>
 
           <div className="role-card">
             <h3>Organizer</h3>
             <p className="card-desc">Create and manage events</p>
-            <button className="primary-btn" onClick={() => navigate('/signup')}>Continue</button>
+            <button
+              className="primary-btn"
+              onClick={() => navigate("/signin/organizer")}
+            >
+              Login
+            </button>
           </div>
-        </div>
-
-        <div className="landing-links">
-          <a href="/signin">Log in</a>
-          <span> · </span>
-          <a href="/signup">Sign up</a>
         </div>
       </main>
     </div>

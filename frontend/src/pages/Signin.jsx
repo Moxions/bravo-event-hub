@@ -1,25 +1,32 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { signIn } from '../auth';
-import './Auth.css';
+import { useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { signIn } from "../auth";
+import "./Auth.css";
 
 function Signin() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
+  const roleParam =
+    params.role ||
+    new URLSearchParams(location.search).get("role") ||
+    "attendee";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     const result = await signIn(email, password);
     if (result.success) {
-      navigate('/dashboard');
+      const nextRole = roleParam || result.role || "attendee";
+      navigate(`/dashboard/${nextRole}`);
     } else {
-      setError(result.error || 'Invalid email or password');
+      setError(result.error || "Invalid email or password");
     }
     setLoading(false);
   };
@@ -37,7 +44,9 @@ function Signin() {
 
         <div className="auth-right">
           <h1 className="auth-title">Welcome Back</h1>
-          <p className="auth-subtitle">Enter your credentials to access your dashboard</p>
+          <p className="auth-subtitle">
+            Enter your credentials to access your dashboard
+          </p>
 
           {error && <div className="error-message">{error}</div>}
 
@@ -67,12 +76,12 @@ function Signin() {
             </div>
 
             <button type="submit" disabled={loading} className="primary-btn">
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? "Logging in..." : "Login"}
             </button>
             <button
               type="button"
               className="ghost-btn"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate(`/dashboard/${roleParam}`)}
               style={{ marginTop: 12 }}
             >
               Continue without logging in
@@ -80,7 +89,8 @@ function Signin() {
           </form>
 
           <p className="muted-link">
-            Don't have an account? <a href="/signup">Sign up</a>
+            Don't have an account?{" "}
+            <a href={`/signup/${roleParam}`}>Sign up as {roleParam}</a>
           </p>
         </div>
       </div>
