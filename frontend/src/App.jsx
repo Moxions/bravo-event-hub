@@ -1,30 +1,33 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Landing from "./pages/Landing";
-import Signin from "./pages/Signin";
-import Signup from "./pages/Signup";
+import PortalSelect from "./pages/PortalSelect";
+import AttendeeSignin from "./pages/AttendeeSignin";
+import OrganiserSignin from "./pages/OrganiserSignin";
+import AttendeeSignup from "./pages/AttendeeSignup";
+import OrganiserSignup from "./pages/OrganiserSignup";
 import AttendeeDashboard from "./pages/AttendeeDashboard";
-import OrganizerDashboard from "./pages/organiser";
+import OrganiserDashboard from "./pages/OrganiserDashboard";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
-      <Route
-        path="/signin"
-        element={<Navigate to="/signin/attendee" replace />}
-      />
-      <Route path="/signin/:role" element={<Signin />} />
-      <Route
-        path="/signup"
-        element={<Navigate to="/signup/attendee" replace />}
-      />
-      <Route path="/signup/:role" element={<Signup />} />
+      <Route path="/portal" element={<PortalSelect />} />
+      <Route path="/signin" element={<Navigate to="/portal" replace />} />
+      <Route path="/signin/attendee" element={<AttendeeSignin />} />
+      <Route path="/signin/organizer" element={<OrganiserSignin />} />
+      <Route path="/signin/organiser" element={<OrganiserSignin />} />
+      <Route path="/signup" element={<Navigate to="/portal" replace />} />
+      <Route path="/signup/attendee" element={<AttendeeSignup />} />
+      <Route path="/signup/organizer" element={<OrganiserSignup />} />
+      <Route path="/signup/organiser" element={<OrganiserSignup />} />
       <Route
         path="/dashboard"
         element={<Navigate to="/dashboard/attendee" replace />}
       />
       <Route path="/dashboard/attendee" element={<AttendeeDashboard />} />
-      <Route path="/dashboard/organizer" element={<OrganizerDashboard />} />
+      <Route path="/dashboard/organizer" element={<OrganiserDashboard />} />
+      <Route path="/dashboard/organiser" element={<OrganiserDashboard />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

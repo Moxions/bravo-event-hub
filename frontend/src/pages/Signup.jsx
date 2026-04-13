@@ -3,13 +3,17 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { signUp } from "../auth";
 import "./Auth.css";
 
-function Signup() {
+function Signup({ fixedRole }) {
   const location = useLocation();
   const params = useParams();
   const roleParam =
+    fixedRole ||
     params?.role ||
     new URLSearchParams(location.search).get("role") ||
     "attendee";
+  const normalizedRole =
+    roleParam.toLowerCase() === "organiser" ? "organizer" : roleParam;
+  const roleLabel = normalizedRole === "organizer" ? "Organiser" : "Attendee";
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,7 +33,7 @@ function Signup() {
     const result = await signUp({
       email,
       password,
-      role: roleParam,
+      role: normalizedRole,
       firstName,
       lastName,
       phone,
@@ -37,7 +41,7 @@ function Signup() {
       age,
     });
     if (result.success) {
-      navigate(`/dashboard/${roleParam}`);
+      navigate(`/dashboard/${normalizedRole}`);
     } else {
       setError(result.error || "Unable to create account");
     }
@@ -70,7 +74,7 @@ function Signup() {
               <div className="input-group full-width">
                 <label>Account type</label>
                 <div className="role-tag">
-                  {roleParam === "organizer" ? "Organizer" : "Attendee"}
+                  {roleLabel}
                 </div>
               </div>
               <div className="input-group">
@@ -115,7 +119,7 @@ function Signup() {
                 />
               </div>
 
-              {roleParam !== "organizer" && (
+              {normalizedRole !== "organizer" && (
                 <>
                   <div className="input-group">
                     <label>Phone Number</label>
@@ -135,7 +139,6 @@ function Signup() {
                       <option value="">Select</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
-                      <option value="other">Other</option>
                     </select>
                   </div>
 
@@ -152,7 +155,7 @@ function Signup() {
               <div className="input-group full-width">
                 <p className="muted-link">
                   Already have an account?{" "}
-                  <a href={`/signin/${roleParam}`}>Log in</a>
+                  <a href={`/signin/${normalizedRole}`}>Log in</a>
                 </p>
               </div>
             </div>

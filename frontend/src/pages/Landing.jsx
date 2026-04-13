@@ -15,31 +15,11 @@ export default function Landing() {
 
       <main className="landing-main">
         <h2 className="landing-welcome">Welcome 👋</h2>
-        <p className="landing-sub">Choose how you want to use the platform</p>
+        <p className="landing-sub">Start by choosing your portal type</p>
 
-        <div className="role-cards">
-          <div className="role-card">
-            <h3>Attendee</h3>
-            <p className="card-desc">Browse and join events</p>
-            <button
-              className="primary-btn"
-              onClick={() => navigate("/signin/attendee")}
-            >
-              Login
-            </button>
-          </div>
-
-          <div className="role-card">
-            <h3>Organizer</h3>
-            <p className="card-desc">Create and manage events</p>
-            <button
-              className="primary-btn"
-              onClick={() => navigate("/signin/organizer")}
-            >
-              Login
-            </button>
-          </div>
-        </div>
+        <button className="primary-btn" onClick={() => navigate("/portal")}>
+          Choose Portal
+        </button>
       </main>
     </div>
   );

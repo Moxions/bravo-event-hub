@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { signIn } from "../auth";
 import "./Auth.css";
 
-function Signin() {
+function Signin({ fixedRole }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -12,9 +12,13 @@ function Signin() {
   const location = useLocation();
   const params = useParams();
   const roleParam =
+    fixedRole ||
     params.role ||
     new URLSearchParams(location.search).get("role") ||
     "attendee";
+  const normalizedRole =
+    roleParam.toLowerCase() === "organiser" ? "organizer" : roleParam;
+  const roleLabel = normalizedRole === "organizer" ? "Organiser" : "Attendee";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +27,7 @@ function Signin() {
 
     const result = await signIn(email, password);
     if (result.success) {
-      const nextRole = roleParam || result.role || "attendee";
+      const nextRole = normalizedRole || result.role || "attendee";
       navigate(`/dashboard/${nextRole}`);
     } else {
       setError(result.error || "Invalid email or password");
@@ -43,7 +47,7 @@ function Signin() {
         </div>
 
         <div className="auth-right">
-          <h1 className="auth-title">Welcome Back</h1>
+          <h1 className="auth-title">{roleLabel} Sign In</h1>
           <p className="auth-subtitle">
             Enter your credentials to access your dashboard
           </p>
@@ -81,7 +85,7 @@ function Signin() {
             <button
               type="button"
               className="ghost-btn"
-              onClick={() => navigate(`/dashboard/${roleParam}`)}
+              onClick={() => navigate(`/dashboard/${normalizedRole}`)}
               style={{ marginTop: 12 }}
             >
               Continue without logging in
@@ -90,7 +94,7 @@ function Signin() {
 
           <p className="muted-link">
             Don't have an account?{" "}
-            <a href={`/signup/${roleParam}`}>Sign up as {roleParam}</a>
+            <a href={`/signup/${normalizedRole}`}>Sign up as {roleLabel}</a>
           </p>
         </div>
       </div>
