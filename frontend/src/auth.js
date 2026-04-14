@@ -1,16 +1,29 @@
-const USERS_KEY = "bravo_users";
 const SESSION_KEY = "bravo_session";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+} from "firebase/auth";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db } from "./firebase";
 
-const readUsers = () => {
-  try {
-    return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
-  } catch {
-    return [];
+const mapFirebaseError = (error) => {
+  const code = error?.code || "";
+
+  switch (code) {
+    case "auth/email-already-in-use":
+      return "Account already exists for this email";
+    case "auth/invalid-email":
+      return "Please enter a valid email address";
+    case "auth/weak-password":
+      return "Password should be at least 6 characters";
+    case "auth/invalid-credential":
+    case "auth/user-not-found":
+    case "auth/wrong-password":
+      return "Invalid email or password";
+    default:
+      return error?.message || "Authentication failed";
   }
-};
-
-const writeUsers = (users) => {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
 };
 
 export const signUp = async ({
@@ -23,53 +36,56 @@ export const signUp = async ({
   gender = "",
   age = "",
 }) => {
-  const users = readUsers();
-  const exists = users.some(
-    (user) => user.email.toLowerCase() === email.toLowerCase(),
-  );
+  try {
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = credential.user.uid;
 
-  if (exists) {
-    return { success: false, error: "Account already exists for this email" };
-  }
-
-  const nextUsers = [
-    ...users,
-    {
+    await setDoc(doc(db, "users", uid), {
+      uid,
       email,
-      password,
       role,
       firstName,
       lastName,
       phone,
       gender,
       age,
-    },
-  ];
-  writeUsers(nextUsers);
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ email, role }));
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
 
-  return { success: true, role };
+    localStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify({ uid, email: credential.user.email, role }),
+    );
+
+    return { success: true, role };
+  } catch (error) {
+    return { success: false, error: mapFirebaseError(error) };
+  }
 };
 
 export const signIn = async (email, password) => {
-  const users = readUsers();
-  const found = users.find(
-    (user) => user.email.toLowerCase() === email.toLowerCase(),
-  );
+  try {
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    const uid = credential.user.uid;
 
-  if (!found || found.password !== password) {
-    return { success: false, error: "Invalid email or password" };
+    const profileDoc = await getDoc(doc(db, "users", uid));
+    const profile = profileDoc.exists() ? profileDoc.data() : null;
+    const role = profile?.role || "attendee";
+
+    localStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify({ uid, email: credential.user.email, role }),
+    );
+
+    return { success: true, role };
+  } catch (error) {
+    return { success: false, error: mapFirebaseError(error) };
   }
-
-  const role = found.role || "attendee";
-  localStorage.setItem(
-    SESSION_KEY,
-    JSON.stringify({ email: found.email, role }),
-  );
-  return { success: true, role };
 };
 
 export const signOut = async () => {
+  await firebaseSignOut(auth);
   localStorage.removeItem(SESSION_KEY);
   return { success: true };
 };
