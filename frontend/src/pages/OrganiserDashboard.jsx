@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./SharedDashboard.css";
 import "./OrganiserDashboard.css";
 
@@ -51,6 +52,14 @@ const activeEvents = [
     registered: "89 registered",
     theme: "green",
   },
+  {
+    tag: "INDIE",
+    icon: "♫",
+    title: "RnB on the Lawn",
+    subtitle: "Raw talent in a serene setting",
+    registered: "89 registered",
+    theme: "purple",
+  },
 ];
 
 function OrganizerEventCard({ event }) {
@@ -88,9 +97,9 @@ export default function OrganiserDashboard() {
           <a href="#events">MY EVENTS</a>
         </nav>
 
-        <button className="org-create-btn" type="button">
+        <Link to="/dashboard/organiser/create-event" className="org-create-btn">
           + Create New Event
-        </button>
+        </Link>
       </header>
 
       <main className="org-shell ui-shell">
@@ -98,7 +107,9 @@ export default function OrganiserDashboard() {
           <h1>
             Organiser. <span>Dashboard.</span>
           </h1>
-          <p>Manage your events and monitor audience performance in one place.</p>
+          <p>
+            Manage your events and monitor audience performance in one place.
+          </p>
         </section>
 
         <section className="ui-section" id="analytics">
@@ -107,7 +118,10 @@ export default function OrganiserDashboard() {
           </div>
           <div className="org-metric-grid ui-grid-three">
             {metrics.map((metric) => (
-              <article key={metric.label} className={`org-metric-card ui-card ${metric.theme}`}>
+              <article
+                key={metric.label}
+                className={`org-metric-card ui-card ${metric.theme}`}
+              >
                 <div className="org-metric-icon">{metric.icon}</div>
                 <div>
                   <p className="org-metric-label">{metric.label}</p>

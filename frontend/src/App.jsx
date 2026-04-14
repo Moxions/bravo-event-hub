@@ -7,6 +7,7 @@ import AttendeeSignup from "./pages/AttendeeSignup";
 import OrganiserSignup from "./pages/OrganiserSignup";
 import AttendeeDashboard from "./pages/AttendeeDashboard";
 import OrganiserDashboard from "./pages/OrganiserDashboard";
+import OrganiserCreateEvent from "./pages/OrganiserCreateEvent";
 
 function App() {
   return (
@@ -28,6 +29,14 @@ function App() {
       <Route path="/dashboard/attendee" element={<AttendeeDashboard />} />
       <Route path="/dashboard/organizer" element={<OrganiserDashboard />} />
       <Route path="/dashboard/organiser" element={<OrganiserDashboard />} />
+      <Route
+        path="/dashboard/organiser/create-event"
+        element={<OrganiserCreateEvent />}
+      />
+      <Route
+        path="/dashboard/organizer/create-event"
+        element={<OrganiserCreateEvent />}
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
