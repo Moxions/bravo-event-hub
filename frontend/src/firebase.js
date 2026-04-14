@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAx0BHLRQ9bF57FWFd2Mb5U-KhN8uXvPnI",
+  apiKey: "AIzaSyAx0BHLRQ9bF57FWfd2Mb5U-KhN8uXvPnI",
   authDomain: "bravo-event-hub-backend.firebaseapp.com",
   projectId: "bravo-event-hub-backend",
   storageBucket: "bravo-event-hub-backend.firebasestorage.app",

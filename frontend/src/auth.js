@@ -2,6 +2,7 @@ const SESSION_KEY = "bravo_session";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInAnonymously,
   signOut as firebaseSignOut,
 } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
@@ -37,7 +38,11 @@ export const signUp = async ({
   age = "",
 }) => {
   try {
-    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    const credential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
     const uid = credential.user.uid;
 
     await setDoc(doc(db, "users", uid), {
@@ -51,6 +56,7 @@ export const signUp = async ({
       age,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
+      isAnonymous: false,
     });
 
     localStorage.setItem(
@@ -84,6 +90,99 @@ export const signIn = async (email, password) => {
   }
 };
 
+// Anonymous sidn in
+export const signInAnonymous = async () => {
+  try {
+    const credential = await signInAnonymously(auth);
+    const uid = credential.user.uid;
+
+    // Store anonymous user in Firestore
+    await setDoc(doc(db, "users", uid), {
+      uid,
+      isAnonymous: true,
+      role: "attendee",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    localStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify({ uid, email: null, role: "attendee", isAnonymous: true }),
+    );
+
+    return { success: true, role: "attendee", isAnonymous: true };
+  } catch (error) {
+    return { success: false, error: mapFirebaseError(error) };
+  }
+};
+
+// Check if user is anonymous
+export const isAnonymousUser = () => {
+  const user = auth.currentUser;
+  return user?.isAnonymous || false;
+};
+
+// Upgrade anonymous to permanent account
+export const upgradeAnonymousAccount = async ({
+  email,
+  password,
+  role = "attendee",
+  firstName = "",
+  lastName = "",
+  phone = "",
+  gender = "",
+  age = "",
+}) => {
+  try {
+    const anonymousUser = auth.currentUser;
+
+    if (!anonymousUser || !anonymousUser.isAnonymous) {
+      return { success: false, error: "No anonymous user found" };
+    }
+
+    // Get anonymous user's data
+    const anonymousDoc = await getDoc(doc(db, "users", anonymousUser.uid));
+    const anonymousData = anonymousDoc.data() || {};
+
+    // Create new email/password account
+    const credential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
+    const newUid = credential.user.uid;
+
+    // Copy data to new user
+    await setDoc(doc(db, "users", newUid), {
+      uid: newUid,
+      email,
+      role: role || anonymousData.role || "attendee",
+      firstName,
+      lastName,
+      phone,
+      gender,
+      age,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      previouslyAnonymous: true,
+      isAnonymous: false,
+    });
+
+    localStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify({
+        uid: newUid,
+        email,
+        role: role || anonymousData.role || "attendee",
+      }),
+    );
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: mapFirebaseError(error) };
+  }
+};
+
 export const signOut = async () => {
   await firebaseSignOut(auth);
   localStorage.removeItem(SESSION_KEY);
@@ -96,4 +195,16 @@ export const getCurrentUser = () => {
   } catch {
     return null;
   }
+};
+
+// Get user role
+export const getUserRole = async () => {
+  const session = getCurrentUser();
+  if (session?.role) return session.role;
+
+  const user = auth.currentUser;
+  if (!user) return null;
+
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  return userDoc.data()?.role || "attendee";
 };
