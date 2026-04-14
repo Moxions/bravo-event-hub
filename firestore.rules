@@ -54,6 +54,9 @@ service cloud.firestore {
         (resource.data.userId == request.auth.uid ||
          isEventOwner(resource.data.eventId));
 
+ffjhbf
+ggkg
+gjmgkg
       allow update: if false;
     }
   }
