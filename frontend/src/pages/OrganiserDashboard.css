@@ -178,6 +178,24 @@
   margin-top: 0;
 }
 
+.org-event-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ui-secondary-btn {
+  margin-top: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  font-weight: 700;
+  font-size: 13px;
+  min-width: 122px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
 @media (max-width: 900px) {
   .org-navbar {
     height: auto;

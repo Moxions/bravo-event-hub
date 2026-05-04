@@ -29,6 +29,7 @@ const metrics = [
 
 const activeEvents = [
   {
+    id: 1,
     tag: "FESTIVAL",
     icon: "◉",
     title: "Electric Horizon Festival",
@@ -37,6 +38,7 @@ const activeEvents = [
     theme: "purple",
   },
   {
+    id: 2,
     tag: "CONCERT",
     icon: "⚯",
     title: "Midnight Jazz Sessions",
@@ -45,6 +47,7 @@ const activeEvents = [
     theme: "orange",
   },
   {
+    id: 3,
     tag: "INDIE",
     icon: "♫",
     title: "RnB on the Lawn",
@@ -53,6 +56,7 @@ const activeEvents = [
     theme: "green",
   },
   {
+    id: 4,
     tag: "INDIE",
     icon: "♫",
     title: "RnB on the Lawn",
@@ -74,9 +78,17 @@ function OrganizerEventCard({ event }) {
         <p>{event.subtitle}</p>
         <div className="org-event-footer">
           <span>{event.registered}</span>
-          <button className="ui-primary-btn" type="button">
-            View Details
-          </button>
+          <div className="org-event-actions">
+            <button className="ui-secondary-btn" type="button">
+              View Details
+            </button>
+            <Link
+              to={`/dashboard/organiser/edit-event/${event.id}`}
+              className="ui-primary-btn"
+            >
+              Edit
+            </Link>
+          </div>
         </div>
       </div>
     </article>
