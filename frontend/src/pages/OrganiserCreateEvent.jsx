@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./OrganiserCreateEvent.css";
+import { createEvent } from "../events";
+import { getCurrentUser } from "../auth";
 
 export default function OrganiserCreateEvent() {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     title: "",
     tagline: "",
@@ -20,11 +24,39 @@ export default function OrganiserCreateEvent() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Publishing show", form);
-    alert("Show published successfully!");
-    navigate("/dashboard/organiser");
+
+    const currentUser = getCurrentUser();
+    if (!currentUser?.uid) {
+      setError("You need to be signed in before creating an event.");
+      return;
+    }
+
+    try {
+      setError("");
+      setIsSubmitting(true);
+
+      await createEvent(
+        {
+          title: form.title,
+          tagline: form.tagline,
+          description: form.description,
+          eventType: form.eventType,
+          primaryGenre: form.primaryGenre,
+          date: form.date,
+          doors: form.doors,
+          venue: form.venue,
+        },
+        currentUser.uid,
+      );
+
+      navigate("/dashboard/organiser");
+    } catch (submitError) {
+      setError(submitError?.message || "Failed to create event.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -56,6 +88,7 @@ export default function OrganiserCreateEvent() {
         </section>
 
         <form className="create-event-form" onSubmit={handleSubmit}>
+          {error ? <p className="error-message">{error}</p> : null}
           <div className="create-event-grid">
             <div className="create-event-card ui-card show-details-card">
               <div className="create-event-card-head">
@@ -121,7 +154,7 @@ export default function OrganiserCreateEvent() {
                 </label>
 
                 <button className="publish-show-btn" type="submit">
-                  Publish Show
+                  {isSubmitting ? "Publishing..." : "Publish Show"}
                 </button>
                 <p className="publish-note">
                   By publishing, you agree to EventHive’s terms for music
