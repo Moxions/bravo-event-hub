@@ -8,6 +8,7 @@ import OrganiserSignup from "./pages/OrganiserSignup";
 import AttendeeDashboard from "./pages/AttendeeDashboard";
 import OrganiserDashboard from "./pages/OrganiserDashboard";
 import OrganiserCreateEvent from "./pages/OrganiserCreateEvent";
+import OrganiserEditEvents from "./pages/OrganiserEditEvents";
 
 function App() {
   return (
@@ -32,6 +33,10 @@ function App() {
       <Route
         path="/dashboard/organiser/create-event"
         element={<OrganiserCreateEvent />}
+      />
+      <Route
+        path="/dashboard/organiser/edit-event/:id"
+        element={<OrganiserEditEvents />}
       />
       <Route
         path="/dashboard/organizer/create-event"
