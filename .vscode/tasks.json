@@ -1,0 +1,71 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Install dependencies (npm)",
+			"type": "shell",
+			"command": "npm install",
+			"group": "build"
+		},
+		{
+			"label": "Start React development server",
+			"type": "shell",
+			"command": "npm start",
+			"group": "build"
+		},
+		{
+			"label": "Install dependencies (npm)",
+			"type": "shell",
+			"command": "npm install",
+			"group": "build"
+		},
+		{
+			"label": "Start React development server",
+			"type": "shell",
+			"command": "npm start",
+			"group": "build"
+		},
+		{
+			"label": "Start React development server",
+			"type": "shell",
+			"command": "npm start",
+			"group": "build"
+		},
+		{
+			"label": "Start React development server",
+			"type": "shell",
+			"command": "npm start",
+			"group": "build"
+		},
+		{
+			"label": "Clean install dependencies",
+			"type": "shell",
+			"command": "rm -rf node_modules package-lock.json && npm install",
+			"group": "build"
+		},
+		{
+			"label": "Clean install dependencies (PowerShell)",
+			"type": "shell",
+			"command": "Remove-Item -Recurse -Force node_modules; Remove-Item -Force package-lock.json; npm install",
+			"group": "build"
+		},
+		{
+			"label": "Install dependencies (npm)",
+			"type": "shell",
+			"command": "npm install",
+			"group": "build"
+		},
+		{
+			"label": "Force delete node_modules and lock file (Windows)",
+			"type": "shell",
+			"command": "rd /s /q node_modules & del /f /q package-lock.json",
+			"group": "build"
+		},
+		{
+			"label": "Force delete node_modules and lock file (PowerShell)",
+			"type": "shell",
+			"command": "Remove-Item -Recurse -Force .\\node_modules; Remove-Item -Force .\\package-lock.json",
+			"group": "build"
+		}
+	]
+}
