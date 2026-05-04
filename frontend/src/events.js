@@ -19,6 +19,24 @@ export const getEvents = async () => {
   return snapshot.docs.map((eventDoc) => ({ id: eventDoc.id, ...eventDoc.data() }));
 };
 
+export const getEventById = async (eventId) => {
+  const snapshot = await getDoc(doc(db, "events", eventId));
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return { id: snapshot.id, ...snapshot.data() };
+};
+
+export const getEventsByOrganizer = async (organizerId) => {
+  const organizerQuery = query(
+    collection(db, "events"),
+    where("organizerId", "==", organizerId),
+  );
+  const snapshot = await getDocs(organizerQuery);
+  return snapshot.docs.map((eventDoc) => ({ id: eventDoc.id, ...eventDoc.data() }));
+};
+
 export const updateEvent = async (eventId, eventData) => {
   await updateDoc(doc(db, "events", eventId), {
     ...eventData,
@@ -60,4 +78,27 @@ export const registerForEvent = async (userId, eventId) => {
   await updateDoc(eventRef, { attendeeCount: currentCount + 1, updatedAt: serverTimestamp() });
 
   return { id: docRef.id, ...registration };
+};
+
+export const getEventsByUser = async (userId) => {
+  const registrationQuery = query(
+    collection(db, "registrations"),
+    where("userId", "==", userId),
+  );
+  const registrations = await getDocs(registrationQuery);
+
+  const events = [];
+  for (const registrationDoc of registrations.docs) {
+    const registrationData = registrationDoc.data();
+    const eventData = await getEventById(registrationData.eventId);
+    if (eventData) {
+      events.push({
+        registrationId: registrationDoc.id,
+        ...registrationData,
+        event: eventData,
+      });
+    }
+  }
+
+  return events;
 };

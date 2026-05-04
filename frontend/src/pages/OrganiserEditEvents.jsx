@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { doc, getDoc, deleteDoc } from "firebase/firestore";
-import { db } from "../firebase.js";
+import { deleteEvent, getEventById, updateEvent } from "../events";
+import { getCurrentUser } from "../auth";
 import "./OrganiserCreateEvent.css";
 
 export default function OrganiserEditEvents() {
@@ -18,33 +18,58 @@ export default function OrganiserEditEvents() {
     venue: "",
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [status, setStatus] = useState("");
+  const user = getCurrentUser();
 
   useEffect(() => {
     const fetchEvent = async () => {
       if (id) {
-        const docRef = doc(db, "events", id);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setForm(docSnap.data());
+        const eventData = await getEventById(id);
+        if (eventData) {
+          if (user?.uid && eventData.organizerId && eventData.organizerId !== user.uid) {
+            setError("You can only edit your own events.");
+          } else {
+            setForm({
+              title: eventData.title || "",
+              tagline: eventData.tagline || "",
+              description: eventData.description || "",
+              eventType: eventData.eventType || "",
+              primaryGenre: eventData.primaryGenre || "",
+              date: eventData.date || "",
+              doors: eventData.doors || "",
+              venue: eventData.venue || "",
+            });
+          }
         } else {
-          console.log("No such document!");
+          setError("Event not found.");
         }
       }
       setLoading(false);
     };
     fetchEvent();
-  }, [id]);
+  }, [id, user?.uid]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Updating event", form);
-    alert("Event updated successfully!");
-    navigate("/dashboard/organiser");
+
+    if (!user?.uid) {
+      setError("Please sign in again to update this event.");
+      return;
+    }
+
+    try {
+      await updateEvent(id, form);
+      setStatus("Event updated successfully.");
+      navigate("/dashboard/organiser");
+    } catch (updateError) {
+      setError(updateError?.message || "Failed to update event.");
+    }
   };
 
   const handleDelete = async () => {
@@ -54,19 +79,34 @@ export default function OrganiserEditEvents() {
       )
     ) {
       try {
-        const docRef = doc(db, "events", id);
-        await deleteDoc(docRef);
-        alert("Event deleted successfully!");
+        await deleteEvent(id);
         navigate("/dashboard/organiser");
       } catch (error) {
         console.error("Error deleting event:", error);
-        alert("Failed to delete event. Please try again.");
+        setError("Failed to delete event. Please try again.");
       }
     }
   };
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error && error.includes("only edit your own")) {
+    return (
+      <div className="create-event-page ui-page">
+        <main className="create-event-shell ui-shell">
+          <p className="error-message">{error}</p>
+          <button
+            className="create-event-back"
+            type="button"
+            onClick={() => navigate("/dashboard/organiser")}
+          >
+            Back to Dashboard
+          </button>
+        </main>
+      </div>
+    );
   }
 
   return (
@@ -96,6 +136,8 @@ export default function OrganiserEditEvents() {
         </section>
 
         <form className="create-event-form" onSubmit={handleSubmit}>
+          {status ? <p className="success-message">{status}</p> : null}
+          {error ? <p className="error-message">{error}</p> : null}
           <div className="create-event-grid">
             <div className="create-event-card ui-card show-details-card">
               <div className="create-event-card-head">

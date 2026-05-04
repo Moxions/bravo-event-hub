@@ -186,6 +186,27 @@
   max-width: 295px;
 }
 
+.success-message,
+.error-message {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.success-message {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.error-message {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
 .gig-logistics-card {
   display: grid;
 }

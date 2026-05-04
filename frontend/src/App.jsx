@@ -39,6 +39,10 @@ function App() {
         element={<OrganiserEditEvents />}
       />
       <Route
+        path="/dashboard/organizer/edit-event/:id"
+        element={<OrganiserEditEvents />}
+      />
+      <Route
         path="/dashboard/organizer/create-event"
         element={<OrganiserCreateEvent />}
       />
