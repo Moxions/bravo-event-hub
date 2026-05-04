@@ -1,13 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./OrganiserCreateEvent.css";
-import { createEvent } from "../events";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteEvent, getEventById, updateEvent } from "../events";
 import { getCurrentUser } from "../auth";
+import "./OrganiserCreateEvent.css";
 
-export default function OrganiserCreateEvent() {
+export default function OrganiserEditEvents() {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const { id } = useParams();
   const [form, setForm] = useState({
     title: "",
     tagline: "",
@@ -18,6 +17,38 @@ export default function OrganiserCreateEvent() {
     doors: "",
     venue: "",
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [status, setStatus] = useState("");
+  const user = getCurrentUser();
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      if (id) {
+        const eventData = await getEventById(id);
+        if (eventData) {
+          if (user?.uid && eventData.organizerId && eventData.organizerId !== user.uid) {
+            setError("You can only edit your own events.");
+          } else {
+            setForm({
+              title: eventData.title || "",
+              tagline: eventData.tagline || "",
+              description: eventData.description || "",
+              eventType: eventData.eventType || "",
+              primaryGenre: eventData.primaryGenre || "",
+              date: eventData.date || "",
+              doors: eventData.doors || "",
+              venue: eventData.venue || "",
+            });
+          }
+        } else {
+          setError("Event not found.");
+        }
+      }
+      setLoading(false);
+    };
+    fetchEvent();
+  }, [id, user?.uid]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -27,37 +58,56 @@ export default function OrganiserCreateEvent() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const currentUser = getCurrentUser();
-    if (!currentUser?.uid) {
-      setError("You need to be signed in before creating an event.");
+    if (!user?.uid) {
+      setError("Please sign in again to update this event.");
       return;
     }
 
     try {
-      setError("");
-      setIsSubmitting(true);
-
-      await createEvent(
-        {
-          title: form.title,
-          tagline: form.tagline,
-          description: form.description,
-          eventType: form.eventType,
-          primaryGenre: form.primaryGenre,
-          date: form.date,
-          doors: form.doors,
-          venue: form.venue,
-        },
-        currentUser.uid,
-      );
-
+      await updateEvent(id, form);
+      setStatus("Event updated successfully.");
       navigate("/dashboard/organiser");
-    } catch (submitError) {
-      setError(submitError?.message || "Failed to create event.");
-    } finally {
-      setIsSubmitting(false);
+    } catch (updateError) {
+      setError(updateError?.message || "Failed to update event.");
     }
   };
+
+  const handleDelete = async () => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this event? This action cannot be undone.",
+      )
+    ) {
+      try {
+        await deleteEvent(id);
+        navigate("/dashboard/organiser");
+      } catch (error) {
+        console.error("Error deleting event:", error);
+        setError("Failed to delete event. Please try again.");
+      }
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error && error.includes("only edit your own")) {
+    return (
+      <div className="create-event-page ui-page">
+        <main className="create-event-shell ui-shell">
+          <p className="error-message">{error}</p>
+          <button
+            className="create-event-back"
+            type="button"
+            onClick={() => navigate("/dashboard/organiser")}
+          >
+            Back to Dashboard
+          </button>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="create-event-page ui-page">
@@ -80,14 +130,13 @@ export default function OrganiserCreateEvent() {
       <main className="create-event-shell ui-shell">
         <section className="create-event-header">
           <div>
-            <p className="create-event-eyebrow">List a New Performance</p>
-            <h1>
-              Get your next gig or festival in front of thousands of music fans.
-            </h1>
+            <p className="create-event-eyebrow">Edit Event</p>
+            <h1>Update your event details.</h1>
           </div>
         </section>
 
         <form className="create-event-form" onSubmit={handleSubmit}>
+          {status ? <p className="success-message">{status}</p> : null}
           {error ? <p className="error-message">{error}</p> : null}
           <div className="create-event-grid">
             <div className="create-event-card ui-card show-details-card">
@@ -132,7 +181,6 @@ export default function OrganiserCreateEvent() {
                 <div className="create-event-card-head">
                   <h2>Music Settings</h2>
                 </div>
-
                 <label className="form-field">
                   <span>Event Type</span>
                   <input
@@ -142,7 +190,6 @@ export default function OrganiserCreateEvent() {
                     placeholder="e.g. Solo Acoustic"
                   />
                 </label>
-
                 <label className="form-field">
                   <span>Primary Genre</span>
                   <input
@@ -152,12 +199,18 @@ export default function OrganiserCreateEvent() {
                     placeholder="e.g. Alternative Rock"
                   />
                 </label>
-
                 <button className="publish-show-btn" type="submit">
-                  {isSubmitting ? "Publishing..." : "Publish Show"}
-                </button>
+                  Update Event
+                </button>{" "}
+                <button
+                  className="delete-event-btn"
+                  type="button"
+                  onClick={handleDelete}
+                >
+                  Delete Event
+                </button>{" "}
                 <p className="publish-note">
-                  By publishing, you agree to EventHive’s terms for music
+                  By updating, you agree to EventHive’s terms for music
                   promoters.
                 </p>
               </div>

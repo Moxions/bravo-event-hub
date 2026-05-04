@@ -162,12 +162,49 @@
   cursor: pointer;
 }
 
+.delete-event-btn {
+  margin-top: 12px;
+  border: 0;
+  border-radius: 16px;
+  background: #ef4444;
+  color: #f8fafc;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 16px 24px;
+  cursor: pointer;
+}
+
+.delete-event-btn:hover {
+  background: #dc2626;
+}
+
 .publish-note {
   margin: 18px 0 0;
   color: #64748b;
   font-size: 13px;
   line-height: 1.7;
   max-width: 295px;
+}
+
+.success-message,
+.error-message {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.success-message {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.error-message {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
 }
 
 .gig-logistics-card {

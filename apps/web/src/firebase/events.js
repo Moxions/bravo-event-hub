@@ -1,6 +1,6 @@
 // apps/web/src/firebase/events.js
 
-import { db } from './firebase';
+import { db } from '@bravo-event/firebase';
 import { 
   collection, 
   addDoc, 
