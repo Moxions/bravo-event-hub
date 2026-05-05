@@ -51,6 +51,9 @@ export default function BrowseEvents() {
           <h1>Pick events and add them to your cart.</h1>
         </div>
         <div className="browse-header-actions">
+          <Link className="browse-home-link" to="/">
+            Home
+          </Link>
           <Link className="browse-header-link" to="/cart">
             Cart ({cartCount})
           </Link>

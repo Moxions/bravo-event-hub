@@ -39,6 +39,7 @@
 }
 
 .browse-header-link,
+.browse-home-link,
 .browse-refresh,
 .browse-event-link,
 .browse-cart-btn,
@@ -55,6 +56,12 @@
 .browse-header-link {
   background: #0f172a;
   color: white;
+}
+
+.browse-home-link {
+  background: #ecfeff;
+  color: #0f766e;
+  border: 1px solid #a5f3fc;
 }
 
 .browse-toolbar {
