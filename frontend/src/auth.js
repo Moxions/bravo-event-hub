@@ -47,3 +47,4 @@ export async function signIn(email, password) {
     return { success: false, error: error.message };
   }
 }
+export { auth };
