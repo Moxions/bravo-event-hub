@@ -1,9 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { signInAnonymous } from "../auth";
 import "./Landing.css";
 
 export default function PortalSelect() {
   const navigate = useNavigate();
+
+  const handleAnonymousLogin = async () => {
+    const result = await signInAnonymous();
+    if (result.success) {
+      navigate("/browse-events");
+    }
+  };
 
   return (
     <div className="landing-hero">
@@ -62,6 +70,17 @@ export default function PortalSelect() {
               style={{ marginTop: 10 }}
             >
               Create organiser account
+            </button>
+          </div>
+
+          <div className="role-card">
+            <h3>Browse Without Login</h3>
+            <p className="card-desc">Explore events anonymously</p>
+            <button
+              className="primary-btn"
+              onClick={handleAnonymousLogin}
+            >
+              Continue Without Login
             </button>
           </div>
         </div>

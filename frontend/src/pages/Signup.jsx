@@ -56,7 +56,7 @@ function Signup({ fixedRole }) {
             <div className="brand-logo">📅</div>
             <div className="brand-title">Bravo Event Hub</div>
             <div className="brand-tag">
-              Join thousands of music enthusiasts and creators
+              Join thousands of events enthusiasts and creators
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@ function Signup({ fixedRole }) {
         <div className="auth-right">
           <h1 className="auth-title">Create an account</h1>
           <p className="auth-subtitle">
-            Join thousands of music enthusiasts and creators
+            Join thousands of events enthusiasts and creators
           </p>
 
           {error && <div className="error-message">{error}</div>}
