@@ -7,6 +7,7 @@ import {
   getEvents,
   getEventsByUser,
   registerForEvent,
+  unregisterForEvent,
 } from "../events";
 
 const toDate = (value) => {
@@ -85,6 +86,7 @@ export default function AttendeeDashboard() {
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
   const [registeringId, setRegisteringId] = useState(null);
+  const [unregisteringId, setUnregisteringId] = useState(null);
 
   const loadData = async () => {
     try {
@@ -149,9 +151,32 @@ export default function AttendeeDashboard() {
     }
   };
 
+  const handleUnregister = async (eventId) => {
+    if (!user?.uid) {
+      setError("Please sign in to manage registrations.");
+      return;
+    }
+
+    try {
+      setUnregisteringId(eventId);
+      setStatus("");
+      await unregisterForEvent(user.uid, eventId);
+      setStatus("Unregistered successfully.");
+      await loadData();
+    } catch (unregisterError) {
+      setError(unregisterError?.message || "Unregister failed.");
+    } finally {
+      setUnregisteringId(null);
+    }
+  };
+
   const handleLogout = async () => {
     await signOut();
     navigate("/portal");
+  };
+
+  const handleOpenCart = () => {
+    navigate("/cart");
   };
 
   const initials = (user?.email || "GU")
@@ -210,9 +235,12 @@ export default function AttendeeDashboard() {
             <h3>Popular Right Now</h3>
             <p>{popularEvents.length} trending events</p>
           </article>
-          <article className="att-action-card">
+          <article className="att-action-card" onClick={handleOpenCart} role="button" tabIndex={0}>
             <h3>My Events</h3>
             <p>{myEvents.length} registrations</p>
+            <button className="att-view-btn ui-primary-btn" type="button" onClick={handleOpenCart}>
+              Open Cart
+            </button>
           </article>
         </section>
 
@@ -306,6 +334,14 @@ export default function AttendeeDashboard() {
                     <p className="att-muted">{entry.event.subtitle}</p>
                     <p className="att-meta">📅 {entry.event.date}</p>
                     <p className="att-meta">📍 {entry.event.venue}</p>
+                    <button
+                      className="att-view-btn ui-primary-btn"
+                      type="button"
+                      onClick={() => handleUnregister(entry.event.id)}
+                      disabled={unregisteringId === entry.event.id}
+                    >
+                      {unregisteringId === entry.event.id ? "Unregistering..." : "Unregister"}
+                    </button>
                   </div>
                 </article>
               ))

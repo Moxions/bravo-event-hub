@@ -80,6 +80,35 @@ export const registerForEvent = async (userId, eventId) => {
   return { id: docRef.id, ...registration };
 };
 
+export const unregisterForEvent = async (userId, eventId) => {
+  const registrationQuery = query(
+    collection(db, "registrations"),
+    where("userId", "==", userId),
+    where("eventId", "==", eventId),
+  );
+  const existing = await getDocs(registrationQuery);
+
+  if (existing.empty) {
+    throw new Error("Registration not found");
+  }
+
+  for (const registrationDoc of existing.docs) {
+    await deleteDoc(doc(db, "registrations", registrationDoc.id));
+  }
+
+  const eventRef = doc(db, "events", eventId);
+  const eventSnapshot = await getDoc(eventRef);
+  if (eventSnapshot.exists()) {
+    const currentCount = eventSnapshot.data()?.attendeeCount || 0;
+    await updateDoc(eventRef, {
+      attendeeCount: Math.max(0, currentCount - existing.docs.length),
+      updatedAt: serverTimestamp(),
+    });
+  }
+
+  return true;
+};
+
 export const getEventsByUser = async (userId) => {
   const registrationQuery = query(
     collection(db, "registrations"),

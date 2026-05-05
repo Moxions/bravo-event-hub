@@ -9,6 +9,9 @@ import AttendeeDashboard from "./pages/AttendeeDashboard";
 import OrganiserDashboard from "./pages/OrganiserDashboard";
 import OrganiserCreateEvent from "./pages/OrganiserCreateEvent";
 import OrganiserEditEvents from "./pages/OrganiserEditEvents";
+import BrowseEvents from "./pages/BrowseEvents";
+import Cart from "./pages/Cart";
+import EventDetails from "./pages/EventDetails";
 
 function App() {
   return (
@@ -30,6 +33,9 @@ function App() {
       <Route path="/dashboard/attendee" element={<AttendeeDashboard />} />
       <Route path="/dashboard/organizer" element={<OrganiserDashboard />} />
       <Route path="/dashboard/organiser" element={<OrganiserDashboard />} />
+      <Route path="/browse-events" element={<BrowseEvents />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/events/:id" element={<EventDetails />} />
       <Route
         path="/dashboard/organiser/create-event"
         element={<OrganiserCreateEvent />}
