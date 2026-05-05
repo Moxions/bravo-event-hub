@@ -82,14 +82,7 @@ function Signin({ fixedRole }) {
             <button type="submit" disabled={loading} className="primary-btn">
               {loading ? "Logging in..." : "Login"}
             </button>
-            <button
-              type="button"
-              className="ghost-btn"
-              onClick={() => navigate(`/dashboard/${normalizedRole}`)}
-              style={{ marginTop: 12 }}
-            >
-              Continue without logging in
-            </button>
+            
           </form>
 
           <p className="muted-link">

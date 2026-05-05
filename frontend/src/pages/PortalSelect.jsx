@@ -37,20 +37,7 @@ export default function PortalSelect() {
               onClick={() => navigate("/browse-events")}
               style={{ marginTop: 10 }}
             >
-              Browse events
-            </button>
-            <button
-              className="ghost-btn"
-              onClick={() => navigate("/cart")}
-              style={{ marginTop: 10 }}
-            >
-              Open cart
-            </button>
-            <button
-              className="ghost-btn"
-              onClick={() => navigate("/signup/attendee")}
-              style={{ marginTop: 10 }}
-            >
+            
               Create attendee account
             </button>
           </div>
