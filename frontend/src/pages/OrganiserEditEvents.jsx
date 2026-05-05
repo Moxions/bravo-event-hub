@@ -11,6 +11,7 @@ export default function OrganiserEditEvents() {
     title: "",
     tagline: "",
     description: "",
+    category: "",
     eventType: "",
     primaryGenre: "",
     date: "",
@@ -27,7 +28,11 @@ export default function OrganiserEditEvents() {
       if (id) {
         const eventData = await getEventById(id);
         if (eventData) {
-          if (user?.uid && eventData.organizerId && eventData.organizerId !== user.uid) {
+          if (
+            user?.uid &&
+            eventData.organizerId &&
+            eventData.organizerId !== user.uid
+          ) {
             setError("You can only edit your own events.");
           } else {
             setForm({
@@ -141,12 +146,12 @@ export default function OrganiserEditEvents() {
           <div className="create-event-grid">
             <div className="create-event-card ui-card show-details-card">
               <div className="create-event-card-head">
-                <h2>Show Details</h2>
-                <p>Define the vibe of your music event.</p>
+                <h2>Event Details</h2>
+                <p>Define the experience and energy for your event.</p>
               </div>
 
               <label className="form-field">
-                <span>Event / Tour Title</span>
+                <span>Event Title</span>
                 <input
                   name="title"
                   value={form.title}
@@ -171,7 +176,7 @@ export default function OrganiserEditEvents() {
                   name="description"
                   value={form.description}
                   onChange={handleChange}
-                  placeholder="Tell fans about the performers, the setlist, and the venue atmosphere..."
+                  placeholder="Tell attendees about the event, what they can expect, and why they should join."
                 />
               </label>
             </div>
@@ -179,24 +184,40 @@ export default function OrganiserEditEvents() {
             <div className="create-event-side-column">
               <div className="create-event-card ui-card music-settings-card">
                 <div className="create-event-card-head">
-                  <h2>Music Settings</h2>
+                  <h2>Event Settings</h2>
                 </div>
                 <label className="form-field">
-                  <span>Event Type</span>
+                  <span>Category</span>
+                  <select
+                    name="category"
+                    value={form.category}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select a category</option>
+                    <option value="Music">Music</option>
+                    <option value="Games">Games</option>
+                    <option value="Business">Business</option>
+                    <option value="Workshop">Workshop</option>
+                    <option value="Social">Social</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </label>
+                <label className="form-field">
+                  <span>Event Type / Format</span>
                   <input
                     name="eventType"
                     value={form.eventType}
                     onChange={handleChange}
-                    placeholder="e.g. Solo Acoustic"
+                    placeholder="e.g. Tournament, Workshop, Live Concert"
                   />
                 </label>
                 <label className="form-field">
-                  <span>Primary Genre</span>
+                  <span>Theme / Genre</span>
                   <input
                     name="primaryGenre"
                     value={form.primaryGenre}
                     onChange={handleChange}
-                    placeholder="e.g. Alternative Rock"
+                    placeholder="e.g. Strategy Gaming, Business Networking, Indie Pop"
                   />
                 </label>
                 <button className="publish-show-btn" type="submit">
@@ -210,14 +231,13 @@ export default function OrganiserEditEvents() {
                   Delete Event
                 </button>{" "}
                 <p className="publish-note">
-                  By updating, you agree to EventHive’s terms for music
-                  promoters.
+                  By updating, you agree to EventHive’s terms for event hosts.
                 </p>
               </div>
 
               <div className="create-event-card ui-card gig-logistics-card">
                 <div className="create-event-card-head">
-                  <h2>Gig Logistics</h2>
+                  <h2>Event Logistics</h2>
                 </div>
 
                 <label className="form-field">

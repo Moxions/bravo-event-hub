@@ -12,6 +12,7 @@ export default function OrganiserCreateEvent() {
     title: "",
     tagline: "",
     description: "",
+    category: "",
     eventType: "",
     primaryGenre: "",
     date: "",
@@ -42,6 +43,7 @@ export default function OrganiserCreateEvent() {
           title: form.title,
           tagline: form.tagline,
           description: form.description,
+          category: form.category,
           eventType: form.eventType,
           primaryGenre: form.primaryGenre,
           date: form.date,
@@ -80,9 +82,10 @@ export default function OrganiserCreateEvent() {
       <main className="create-event-shell ui-shell">
         <section className="create-event-header">
           <div>
-            <p className="create-event-eyebrow">List a New Performance</p>
+            <p className="create-event-eyebrow">List a New Event</p>
             <h1>
-              Get your next gig or festival in front of thousands of music fans.
+              Host your next music, games, business, or social event and reach
+              the right audience.
             </h1>
           </div>
         </section>
@@ -92,12 +95,12 @@ export default function OrganiserCreateEvent() {
           <div className="create-event-grid">
             <div className="create-event-card ui-card show-details-card">
               <div className="create-event-card-head">
-                <h2>Show Details</h2>
-                <p>Define the vibe of your music event.</p>
+                <h2>Event Details</h2>
+                <p>Define the experience and energy for your event.</p>
               </div>
 
               <label className="form-field">
-                <span>Event / Tour Title</span>
+                <span>Event Title</span>
                 <input
                   name="title"
                   value={form.title}
@@ -122,7 +125,7 @@ export default function OrganiserCreateEvent() {
                   name="description"
                   value={form.description}
                   onChange={handleChange}
-                  placeholder="Tell fans about the performers, the setlist, and the venue atmosphere..."
+                  placeholder="Tell attendees about the event, what they can expect, and why they should join."
                 />
               </label>
             </div>
@@ -130,41 +133,57 @@ export default function OrganiserCreateEvent() {
             <div className="create-event-side-column">
               <div className="create-event-card ui-card music-settings-card">
                 <div className="create-event-card-head">
-                  <h2>Music Settings</h2>
+                  <h2>Event Settings</h2>
                 </div>
 
                 <label className="form-field">
-                  <span>Event Type</span>
+                  <span>Category</span>
+                  <select
+                    name="category"
+                    value={form.category}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select a category</option>
+                    <option value="Music">Music</option>
+                    <option value="Games">Games</option>
+                    <option value="Business">Business</option>
+                    <option value="Workshop">Workshop</option>
+                    <option value="Social">Social</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </label>
+
+                <label className="form-field">
+                  <span>Event Type / Format</span>
                   <input
                     name="eventType"
                     value={form.eventType}
                     onChange={handleChange}
-                    placeholder="e.g. Solo Acoustic"
+                    placeholder="e.g. Tournament, Workshop, Live Concert"
                   />
                 </label>
 
                 <label className="form-field">
-                  <span>Primary Genre</span>
+                  <span>Theme / Genre</span>
                   <input
                     name="primaryGenre"
                     value={form.primaryGenre}
                     onChange={handleChange}
-                    placeholder="e.g. Alternative Rock"
+                    placeholder="e.g. Strategy Gaming, Business Networking, Indie Pop"
                   />
                 </label>
 
                 <button className="publish-show-btn" type="submit">
-                  {isSubmitting ? "Publishing..." : "Publish Show"}
+                  {isSubmitting ? "Publishing..." : "Publish Event"}
                 </button>
                 <p className="publish-note">
-                  By publishing, you agree to EventHive’s terms for music
-                  promoters.
+                  By publishing, you agree to EventHive’s terms for event hosts.
                 </p>
               </div>
 
               <div className="create-event-card ui-card gig-logistics-card">
                 <div className="create-event-card-head">
-                  <h2>Gig Logistics</h2>
+                  <h2>Event Logistics</h2>
                 </div>
 
                 <label className="form-field">
